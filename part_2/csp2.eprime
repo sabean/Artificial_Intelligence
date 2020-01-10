@@ -1,0 +1,45 @@
+language ESSENCE' 1.0
+
+letting   ROW be domain int(1..8)
+letting   COLUMN be domain int(1..4)
+
+$ encoding in a matrix for implicit constraint
+find M: matrix indexed by [ROW, COLUMN] of int(0,1)
+
+such that
+
+	$ (1) model implicit constraint Everyone plays a game
+	forAll row : ROW .
+		(sum i : COLUMN . M[row,i]) = 1,
+
+	$ (3) model implicit constraint No game is not played (i.e. each game must be played at least by one child)
+	forAll col : COLUMN .
+		(sum i : ROW . M[i,col]) >= 1,
+
+	$ (4) model implicit constraint that Risk is a game for 3 to 6 players
+	((sum i : ROW . M[i,1]) >= 3 /\ (sum i : ROW . M[i,1]) <= 6) \/ ((sum i : ROW . M[i,1]) = 0),
+
+	$ (5) model implicit constraint that Scrabble is a game for 2 to 4 players
+	((sum i : ROW . M[i,2]) >= 2 /\ (sum i : ROW . M[i,2]) <= 4) \/ ((sum i : ROW . M[i,2]) = 0),
+
+	$ (6) model implicit constraint that UNO is a game for 2 to 6 players
+	((sum i : ROW . M[i,3]) >= 2 /\ (sum i : ROW . M[i,3]) <= 6) \/ ((sum i : ROW . M[i,3]) = 0),
+
+	$ (7) model implicit constraint that Lego is a game for 1 to 3 players
+	((sum i : ROW . M[i,4]) >= 1 /\ (sum i : ROW . M[i,4]) <= 3) \/ ((sum i : ROW . M[i,4]) = 0),
+
+	$ (8) model implicit constraint Andrea plays together with Celeste
+	forAll col : COLUMN .
+		(sum i : int(1,3) . M[i,col]) = 2  \/ (sum i : int(1,3) . M[i,col]) = 0,
+
+	$ (9) model implicit constraint David, Emanuel, and George don’t play together because they don’t get along
+	forAll col : COLUMN .
+		(sum i : int(4,5,7) . M[i,col]) <= 1,
+
+	$ (10) model implicit constraint David and Beatrix don’t play Risk because they hate this game
+	M[2,1] != 1,
+	M[4,1] != 1,
+
+	$ (12) model implicit constraint Hilary plays with at least another girl beside herself
+	forAll col : COLUMN .
+		(M[8,col] = 1 /\ (sum i : int(1,2,3) . M[i,col]) >= 1) \/ (M[8,col] = 0 /\ (sum i : int(1,2,3) . M[i,col]) >= 0)
