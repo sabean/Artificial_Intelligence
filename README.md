@@ -1,2 +1,5 @@
 # Artificial_Intelligence
-Some simple projects on AI (to be updated soon .. ).
+This project consists of topics related to:
+
+1. search problem
+2. constraint satisfaction problem
